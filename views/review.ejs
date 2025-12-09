@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deixar Avaliação</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827;
+            color: #dcddde;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 1.5rem;
+            box-sizing: border-box;
+        }
+        .card {
+            background-color: #1f2937;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 500px;
+        }
+        h2 {
+            color: #f9fafb;
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+        }
+        p { text-align: center; margin-bottom: 2rem; color: #9ca3af; }
+        strong { color: #60a5fa; }
+        .form-group { margin-bottom: 1.5rem; }
+        label { display: block; margin-bottom: 0.5rem; font-weight: 500; color: #b5bac1; }
+        textarea {
+            width: 100%;
+            background-color: #111827;
+            border: 1px solid #374151;
+            border-radius: 5px;
+            padding: 10px;
+            color: #dcddde;
+            resize: vertical;
+            min-height: 100px;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #5865f2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        button:hover { background-color: #2563eb; }
+
+        /* Star Rating */
+        .star-rating {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        .star-rating input[type="radio"] {
+            display: none;
+        }
+        .star-rating label {
+            font-size: 2.5rem;
+            color: #4b5563;
+            cursor: pointer;
+            transition: color 0.2s;
+            margin: 0;
+        }
+        .star-rating input[type="radio"]:checked ~ label,
+        .star-rating label:hover,
+        .star-rating label:hover ~ label {
+            color: #facc15; /* Amarelo */
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>Sua Avaliação</h2>
+        <p>Produto: <strong><%= delivery.itemName %></strong></p>
+        <form action="/submit-review/<%= delivery.id %>" method="post">
+            <div class="form-group">
+                <label>Sua nota</label>
+                <div class="star-rating">
+                    <input type="radio" id="star5" name="rating" value="5" required><label for="star5">★</label>
+                    <input type="radio" id="star4" name="rating" value="4"><label for="star4">★</label>
+                    <input type="radio" id="star3" name="rating" value="3"><label for="star3">★</label>
+                    <input type="radio" id="star2" name="rating" value="2"><label for="star2">★</label>
+                    <input type="radio" id="star1" name="rating" value="1"><label for="star1">★</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="text">O que você achou da sua compra?</label>
+                <textarea id="text" name="text" placeholder="Sua experiência foi ótima? O atendimento foi rápido? Nos conte tudo!" required></textarea>
+            </div>
+            <button type="submit">Enviar Avaliação</button>
+        </form>
+    </div>
+</body>
+</html>

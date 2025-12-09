@@ -1,0 +1,99 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model StockItem {
+  id         String           @id
+  name       String
+  emoji      String
+  quantity   Int
+  price      Decimal
+  max        Int
+  // Adiciona a relação para o histórico de entregas
+  deliveries DeliveryRecord[]
+  // Adiciona a relação para os códigos de presente
+  giftCodes  GiftCode[]
+}
+
+model DeliveryRecord {
+  id              Int      @id @default(autoincrement())
+  timestamp       DateTime @default(now())
+  mention         String?
+  itemId          String
+  itemName        String
+  quantity        Int
+  photoUrl        String?
+  messageSent     Boolean  @default(false)
+  messageStatus   Int      @default(0)
+  ticketChannelId String?
+  deliveryChannelId String? // Adiciona o ID do canal de entrega
+  // Adiciona a relação para o item do estoque
+  item            StockItem  @relation(fields: [itemId], references: [id])
+  // Adiciona a relação para a avaliação
+  review          Review?
+}
+
+model Configuration {
+  id                Int     @id @default(1)
+  mainChannelId     String?
+  deliveryChannelId String?
+  mainMessageId     String?
+  clientRoleId      String?
+  guildId           String?
+  reviewsChannelId  String?
+}
+
+model Coupon {
+  id                 Int      @id @default(autoincrement())
+  code               String   @unique
+  discountPercentage Float
+  usesLeft           Int
+  isActive           Boolean  @default(true)
+  createdAt          DateTime @default(now())
+}
+
+model Punishment {
+  id              Int      @id @default(autoincrement())
+  userId          String   @unique
+  originalRoles   String[]
+  punishChannelId String
+  reason          String
+  createdAt       DateTime @default(now())
+}
+
+model Warning {
+  id          Int      @id @default(autoincrement())
+  userId      String
+  moderatorId String
+  reason      String
+  createdAt   DateTime @default(now())
+}
+
+model Review {
+  id               Int            @id @default(autoincrement())
+  rating           Int // Nota de 1 a 5
+  text             String
+  createdAt        DateTime       @default(now())
+  deliveryRecordId Int            @unique // Cada entrega só pode ter uma avaliação
+  deliveryRecord   DeliveryRecord @relation(fields: [deliveryRecordId], references: [id])
+}
+
+model GiftCode {
+  id               Int       @id @default(autoincrement())
+  code             String    @unique
+  itemId           String
+  isRedeemed       Boolean   @default(false)
+  redeemedByUserId String?
+  redeemedAt       DateTime?
+  createdAt        DateTime  @default(now())
+
+  // Relação com o item do estoque
+  item StockItem @relation(fields: [itemId], references: [id])
+}
